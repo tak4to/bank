@@ -35,8 +35,10 @@ def feature_engineering(df, is_train=True):
     df = df.copy()
 
     # ===== 1. 数値特徴量の変換 =====
-    df['age_group'] = pd.cut(df['age'], bins=[0, 25, 35, 45, 55, 65, 100],
-                              labels=['0-25', '26-35', '36-45', '46-55', '56-65', '65+'])
+    # 年齢グループ (スタージェンの公式に基づく最適ビン数: 16)
+    # k = 1 + 3.322 * log10(n) = 1 + 3.322 * log10(27128) ≈ 16
+    # 年齢範囲: 18-95歳を16グループに等幅分割
+    df['age_group'] = pd.cut(df['age'], bins=16)
 
     # balance の対数変換
     df['balance_log'] = np.log1p(df['balance'] - df['balance'].min() + 1)
